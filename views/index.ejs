@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SGS Meme Corporation</title>
+  <!-- Link CSS from public folder -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav>
+    <h1>Welcome to SGS Meme Corporation</h1>
+    <div class="logo">
+      <img src="/logo.jpeg" alt="Company Logo">
+    </div>
+  </nav>
+
+  <div id="welcomePopup">
+    <span id="typewriter-text">🎉Create and Share Your Memes🎉</span> 
+  </div>
+  
+  <!-- Thought Submission Form -->
+  <form id="thoughtForm" action="/submit" method="post" enctype="multipart/form-data">
+    <label for="thought">Share your thoughts (min 25 characters):</label>
+    <textarea id="thought" name="thought" required></textarea>
+    <small id="error-message" class="hidden">Thought must be at least 25 characters.</small>
+    <br><br><br>
+    <label for="image">Upload Your Meme:</label>
+    <input type="file" id="image" name="image" accept="image/*">
+    <br><br><br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <!-- Download Meme Templates ZIP -->
+  <button id="downloadTemplate">Download Meme Templates</button>
+
+  <h1>User privacy is our first concern, so feel free to share</h1>
+
+  <!-- Link JavaScript -->
+  <script src="/js/script.js"></script>
+</body>
+</html>
