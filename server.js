@@ -17,21 +17,26 @@ app.use(express.urlencoded({ extended: true }));
 // 3. Set EJS as the view engine (views folder should contain index.ejs)
 app.set("view engine", "ejs");
 
-// 4. Connect to MySQL using credentials from the .env file
-const db = mysql.createConnection({
+// 4. Create a connection pool using credentials from the .env file
+const pool = mysql.createPool({
   host: process.env.DB_HOST,       // bks2jduno7avfl0er3f5-mysql.services.clever-cloud.com
   user: process.env.DB_USER,       // uvsaujkjiicbbmuq
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,   // bks2jduno7avfl0er3f5
-  port: process.env.DB_PORT        // 3306
+  port: process.env.DB_PORT,       // 3306
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-db.connect((err) => {
+// Test pool connection
+pool.getConnection((err, connection) => {
   if (err) {
     console.error("Database Connection Failed:", err);
-    return;
+  } else {
+    console.log("Connected to MySQL database via pool.");
+    connection.release();
   }
-  console.log("Connected to MySQL database.");
 });
 
 // 5. Configure Multer for file uploads (images go to public/uploads)
@@ -65,7 +70,7 @@ app.post("/submit", upload.single("image"), (req, res) => {
   }
 
   const sql = "INSERT INTO thoughts (thought, image) VALUES (?, ?)";
-  db.query(sql, [thought, imagePath], (err) => {
+  pool.query(sql, [thought, imagePath], (err) => {
     if (err) {
       console.error("Database error:", err);
       return res.status(500).send("Database error.");
@@ -78,7 +83,7 @@ app.post("/submit", upload.single("image"), (req, res) => {
 app.post("/capture-ip", (req, res) => {
   const { ip } = req.body;
   const sql = "INSERT INTO ip_addresses (ip) VALUES (?)";
-  db.query(sql, [ip], (err) => {
+  pool.query(sql, [ip], (err) => {
     if (err) {
       console.error("Error inserting IP:", err);
       return res.status(500).send("Failed to insert IP.");
